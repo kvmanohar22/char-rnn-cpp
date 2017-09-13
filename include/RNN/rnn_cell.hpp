@@ -22,6 +22,7 @@ namespace RNN {
       size_t rnn_size;
       size_t seq_len;
       size_t voc_len;
+      size_t batch_size;
 
     protected:
       void update_W_hh();
@@ -31,9 +32,13 @@ namespace RNN {
       void update_b_xh();
       void update_b_hy();
 
+      void update_h(T *new_h);
+
+      void set_memory();
+
     public:
-      RNN_Cell(size_t voc_len);
-      RNN_Cell(size_t rnn_size, size_t seq_len, size_t voc_len);
+      RNN_Cell(size_t voc_len, size_t batch_size);
+      RNN_Cell(size_t rnn_size, size_t seq_len, size_t voc_len, size_t batch_size);
       ~RNN_Cell();
 
       void forward(T *x);

@@ -1,67 +1,90 @@
 #include "RNN/rnn_cell.hpp"
+#include "RNN/utils.hpp"
 
 #include <memory>
+#include <iostream>
+#include <cassert>
 #include <algorithm>
+
+using namespace Utils;
 
 namespace RNN {
 
   template <class T>
-  RNN_Cell<T>::RNN_Cell(size_t voc_len) {
+  RNN_Cell<T>::RNN_Cell(size_t voc_len, size_t batch_size) {
     this->rnn_size = 512;
     this->seq_len = 100;
     this->voc_len = voc_len;
+    this->batch_size = batch_size;
 
-    this->W_xh = new T[seq_len * rnn_size];
-    this->W_hh = new T[rnn_size * rnn_size];
-    this->W_hy = new T[rnn_size * voc_len];
-
-    this->b_xh = new T[rnn_size];
-    this->b_hy = new T[voc_len];
+    set_memory();
   }
 
   template <class T>
-  RNN_Cell<T>::RNN_Cell(size_t rnn_size, size_t seq_len, size_t voc_len) {
+  RNN_Cell<T>::RNN_Cell(size_t rnn_size, size_t seq_len,
+    size_t voc_len, size_t batch_size) {
     this->rnn_size = rnn_size;
     this->seq_len = seq_len;
     this->voc_len = voc_len;
+    this->batch_size = batch_size;
 
-    this->W_xh = new T[seq_len * rnn_size];
-    this->dW_xh = new T[seq_len * rnn_size];
+    set_memory();
+  }
 
-    this->W_hh = new T[rnn_size * rnn_size];
-    this->dW_hh = new T[rnn_size * rnn_size];
+  template <class T>
+  void RNN_Cell<T>::set_memory() {
+    W_xh = new T[voc_len * rnn_size];
+    dW_xh = new T[voc_len * rnn_size];
 
-    this->W_hy = new T[rnn_size * voc_len];
-    this->dW_hy = new T[rnn_size * voc_len];
+    W_hh = new T[rnn_size * rnn_size];
+    dW_hh = new T[rnn_size * rnn_size];
 
-    this->b_xh = new T[rnn_size];
-    this->db_xh = new T[rnn_size];
+    W_hy = new T[rnn_size * voc_len];
+    dW_hy = new T[rnn_size * voc_len];
 
-    this->b_hy = new T[voc_len];
-    this->db_hy = new T[voc_len];
+    b_xh = new T[rnn_size];
+    db_xh = new T[rnn_size];
+
+    b_hy = new T[voc_len];
+    db_hy = new T[voc_len];
   }
 
   template <class T>
   RNN_Cell<T>::~RNN_Cell() {
-    delete [] this->W_xh;
-    delete [] this->dW_xh;
+    delete [] W_xh;
+    delete [] dW_xh;
 
-    delete [] this->W_hh;
-    delete [] this->dW_hh;
+    delete [] W_hh;
+    delete [] dW_hh;
 
-    delete [] this->W_hy;
-    delete [] this->dW_hy;
+    delete [] W_hy;
+    delete [] dW_hy;
 
-    delete [] this->b_xh;
-    delete [] this->db_xh;
+    delete [] b_xh;
+    delete [] db_xh;
 
-    delete [] this->b_hy;
-    delete [] this->db_hy;
+    delete [] b_hy;
+    delete [] db_hy;
   }
 
   template <class T>
   void RNN_Cell<T>::forward(T *x) {
+    T *result_xh = new T[rnn_size];
+    T *result_hh = new T[rnn_size];
+    T *result_ad = new T[rnn_size];
+    T *result_bb = new T[rnn_size];
 
+    utils<T>::mul_mat_vec(result_xh, W_xh, x, rnn_size, voc_len);
+    utils<T>::mul_mat_vec(result_hh, W_hh, h, rnn_size, rnn_size);
+    utils<T>::add_vec_vec(result_ad, result_xh, result_hh, rnn_size);
+    utils<T>::add_vec_vec(result_ad, result_ad, b_xh, rnn_size);
+
+    update_h(result_ad);
+
+    delete [] result_xh;
+    delete [] result_hh;
+    delete [] result_ad;
+    delete [] result_bb;
   }
 
   template <class T>
@@ -72,6 +95,18 @@ namespace RNN {
   template <class T>
   void RNN_Cell<T>::update_W_hh() {
     
+  }
+
+  template <class T>
+  void RNN_Cell<T>::update_h(T *new_h) {
+    for (size_t i = 0; i < rnn_size; ++i) {
+      try {
+        h[i] = new_h[i];
+      } catch (std::exception &exp) {
+        std::cerr << "Exception occured in updating hypothesis: "
+                  << exp.what() << std::endl;
+      }
+    }
   }
 
   template <class T>
