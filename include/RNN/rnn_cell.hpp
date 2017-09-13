@@ -9,12 +9,13 @@ namespace RNN {
   class RNN_Cell {
 
     private:
-      T *W_xh;
-      T *W_hh;
-      T *W_hy;
 
-      T *b_xh;
-      T *b_hy;
+      T *W_xh, *dW_xh;
+      T *W_hh, *dW_hh;
+      T *W_hy, *dW_hy;
+
+      T *b_xh, *db_xh;
+      T *b_hy, *db_hy;
 
       T *h;
 

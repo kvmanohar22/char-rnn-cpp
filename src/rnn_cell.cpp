@@ -26,21 +26,37 @@ namespace RNN {
     this->voc_len = voc_len;
 
     this->W_xh = new T[seq_len * rnn_size];
+    this->dW_xh = new T[seq_len * rnn_size];
+
     this->W_hh = new T[rnn_size * rnn_size];
+    this->dW_hh = new T[rnn_size * rnn_size];
+
     this->W_hy = new T[rnn_size * voc_len];
+    this->dW_hy = new T[rnn_size * voc_len];
 
     this->b_xh = new T[rnn_size];
+    this->db_xh = new T[rnn_size];
+
     this->b_hy = new T[voc_len];
+    this->db_hy = new T[voc_len];
   }
 
   template <class T>
   RNN_Cell<T>::~RNN_Cell() {
     delete [] this->W_xh;
+    delete [] this->dW_xh;
+
     delete [] this->W_hh;
+    delete [] this->dW_hh;
+
     delete [] this->W_hy;
+    delete [] this->dW_hy;
 
     delete [] this->b_xh;
+    delete [] this->db_xh;
+
     delete [] this->b_hy;
+    delete [] this->db_hy;
   }
 
   template <class T>

@@ -9,9 +9,4 @@ Implementation of char-rnn in C++
 
 # Building 
 
-```
-mkdir build
-cd build
-cmake ..
-make
-```
+Work In Progress !
