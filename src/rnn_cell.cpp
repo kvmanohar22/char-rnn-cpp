@@ -6,7 +6,7 @@
 #include <cassert>
 #include <algorithm>
 
-using namespace Utils;
+using namespace RNN::Utils;
 
 namespace RNN {
 
