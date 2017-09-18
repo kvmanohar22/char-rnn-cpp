@@ -11,7 +11,7 @@ using namespace RNN::Utils;
 namespace RNN {
 
   template <class T>
-  RNN_Cell<T>::RNN_Cell(size_t voc_len, size_t batch_size) {
+  vanilla_cell<T>::vanilla_cell(size_t voc_len, size_t batch_size) {
     this->rnn_size = 512;
     this->seq_len = 100;
     this->voc_len = voc_len;
@@ -21,7 +21,7 @@ namespace RNN {
   }
 
   template <class T>
-  RNN_Cell<T>::RNN_Cell(size_t rnn_size, size_t seq_len,
+  vanilla_cell<T>::vanilla_cell(size_t rnn_size, size_t seq_len,
     size_t voc_len, size_t batch_size) {
     this->rnn_size = rnn_size;
     this->seq_len = seq_len;
@@ -32,7 +32,7 @@ namespace RNN {
   }
 
   template <class T>
-  void RNN_Cell<T>::set_memory() {
+  void vanilla_cell<T>::set_memory() {
     W_xh = new T[voc_len * rnn_size];
     dW_xh = new T[voc_len * rnn_size];
 
@@ -50,7 +50,7 @@ namespace RNN {
   }
 
   template <class T>
-  RNN_Cell<T>::~RNN_Cell() {
+  vanilla_cell<T>::~vanilla_cell() {
     delete [] W_xh;
     delete [] dW_xh;
 
@@ -68,7 +68,7 @@ namespace RNN {
   }
 
   template <class T>
-  void RNN_Cell<T>::forward(T *x) {
+  T vanilla_cell<T>::forward(T *x) {
     T *result_xh = new T[rnn_size];
     T *result_hh = new T[rnn_size];
     T *result_ad = new T[rnn_size];
@@ -88,17 +88,17 @@ namespace RNN {
   }
 
   template <class T>
-  void RNN_Cell<T>::backward() {
+  void vanilla_cell<T>::backward() {
 
   }
 
   template <class T>
-  void RNN_Cell<T>::update_W_hh() {
+  void vanilla_cell<T>::update_W_hh() {
     
   }
 
   template <class T>
-  void RNN_Cell<T>::update_h(T *new_h) {
+  void vanilla_cell<T>::update_h(T *new_h) {
     for (size_t i = 0; i < rnn_size; ++i) {
       try {
         h[i] = new_h[i];
@@ -110,27 +110,27 @@ namespace RNN {
   }
 
   template <class T>
-  void RNN_Cell<T>::update_W_xh() {
+  void vanilla_cell<T>::update_W_xh() {
     
   }
 
   template <class T>
-  void RNN_Cell<T>::update_W_hy() {
+  void vanilla_cell<T>::update_W_hy() {
     
   }
 
   template <class T>
-  void RNN_Cell<T>::update_b_xh() {
+  void vanilla_cell<T>::update_b_xh() {
     
   }
 
   template <class T>
-  void RNN_Cell<T>::update_b_hy() {
+  void vanilla_cell<T>::update_b_hy() {
 
   }
 
  template <class T>
-  void RNN_Cell<T>::checkpoint() {
+  void vanilla_cell<T>::checkpoint() {
 
   }
 

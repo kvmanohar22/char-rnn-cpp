@@ -7,7 +7,9 @@ list(APPEND CMAKE_CXX_FLAGS "-std=c++11 -O2")
 
 set(srcs src/rnn_cell.cpp
     src/utils.cpp
-    src/softmax_layer.cpp)
+    src/softmax_layer.cpp
+    src/optimizers.cpp
+    src/dataset.cpp)
 
 add_library(vanillaRNN SHARED ${srcs})
 

@@ -6,7 +6,7 @@
 namespace RNN {
 
   template <class T>
-  class RNN_Cell {
+  class vanilla_cell {
 
     private:
 
@@ -37,11 +37,12 @@ namespace RNN {
       void set_memory();
 
     public:
-      RNN_Cell(size_t voc_len, size_t batch_size);
-      RNN_Cell(size_t rnn_size, size_t seq_len, size_t voc_len, size_t batch_size);
-      ~RNN_Cell();
+      vanilla_cell() {}
+      vanilla_cell(size_t voc_len, size_t batch_size);
+      vanilla_cell(size_t rnn_size, size_t seq_len, size_t voc_len, size_t batch_size);
+      ~vanilla_cell();
 
-      void forward(T *x);
+      T forward(T *x);
       void backward();
 
       void checkpoint();
