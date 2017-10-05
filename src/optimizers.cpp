@@ -22,33 +22,49 @@ namespace RNN {
       this->batch_size = batch_size;
       this->seq_len = seq_len;
 
+      current_idx = 0;
+      
       // Set data
       dataset = new Utils::Dataset<T>(Utils::Hyperparams::root_path);
-      this->current_idx = 0;
-      
       // Initialize the Network
       cell = new RNN::vanilla_cell<T>(dataset->get_voc_len(), batch_size);
+      // Softmax layer to compute the loss of the model at a given time step
+      soft_layer = new RNN::layers::Softmax<T>(dataset->get_voc_len());
     }
 
     template <class T>
     Optimizer<T>::~Optimizer() {
       delete dataset;
       delete cell;
+      delete soft_layer;
     }
 
     template <class T>
     void Optimizer<T>::step(T *input, T *target) {
       std::vector<T> loss_t;
+      T *output_dt = new T[dataset->get_voc_len()];
+      T *input_dt = new T[dataset->get_voc_len()];
+      T *target_dt = new T[dataset->get_voc_len()];
 
       // Forward pass
-      for (size_t dt = 0; dt < dataset->get_voc_len(); ++dt) {
-        T loss = cell->forward(input);
+      for (size_t dt = 0; dt < seq_len; ++dt) {
+        // Slice the data for a single time step
+        for (size_t j = 0; j < dataset->get_voc_len(); ++j) {
+          input_dt[j] = input[dataset->get_voc_len() * dt + j];
+          target_dt[j] = target[dataset->get_voc_len() * dt + j];
+        }
+        cell->forward(input_dt);
+        cell->output(output_dt);
+        soft_layer->forward(output_dt, target_dt);
+        T loss = soft_layer->loss();
         loss_t.push_back(loss);
       }
 
       // Backward pass and update weights
       cell->backward();
-
+      delete output_dt;
+      delete input_dt;
+      delete target_dt;
     }
 
     template <class T>
@@ -62,7 +78,7 @@ namespace RNN {
         if (current_idx > dataset->get_max_len(PHASE)) {
           this->current_idx = 0;
         }
-        dataset->load_data(current_idx, batch_input, this->PHASE);
+        dataset->load_data(current_idx, batch_input);
         dataset->generate_target(batch_input, batch_target);
 
         dataset->tokenize_chars(batch_input, batch_tokenized_input);

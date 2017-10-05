@@ -7,6 +7,7 @@
 #include <cstddef>
 #include <iostream>
 #include <map>
+#include <math.h>
 #include <memory>
 #include <random>
 #include <string>
@@ -23,28 +24,28 @@ namespace RNN {
 		template <class T>
 		class utils {
 			protected:
-       /**
-        * xavier initializer
-        * @param mat Matrix of randomly initialized values
-        * @param h   Height of matrix
-        * @param w   Width of matrix
-        */
+          /**
+           * xavier initializer
+           * @param mat Matrix of randomly initialized values
+           * @param h   Height of matrix
+           * @param w   Width of matrix
+           */
 				void xavier_init(T *mat, size_t &h, size_t &w = 0);
-       /**
-        * Gaussian initializer
-        * @param mean Mean of distribution
-        * @param std  Std deviation of distribution
-        * @param mat  Matrix of randomly initialized values
-        * @param h    Height of matrix
-        * @param w    Width of matrix
-        */
+          /**
+           * Gaussian initializer
+           * @param mean Mean of distribution
+           * @param std  Std deviation of distribution
+           * @param mat  Matrix of randomly initialized values
+           * @param h    Height of matrix
+           * @param w    Width of matrix
+           */
 				void gaussian_init(T mean, T std, T *mat, size_t &h, size_t &w = 0);
-       /**
-        * Constant Initializer
-        * @param vec     Vector of randomly initialized values
-        * @param vec_len Length of input vector
-        * @param val     Constant value to be initialized with
-        */
+          /**
+           * Constant Initializer
+           * @param vec     Vector of randomly initialized values
+           * @param vec_len Length of input vector
+           * @param val     Constant value to be initialized with
+           */
 				void constant_init(T *vec, size_t &vec_len, T &val = 0);
 
 			public:
@@ -59,6 +60,9 @@ namespace RNN {
 
 				static T Exp(T &arg);
 				static T Log(T &arg);
+
+            static T Tanh(T &arg);
+            static void Tanh(T *arg, size_t len);
 		};
 
 	}

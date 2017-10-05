@@ -18,6 +18,7 @@ namespace RNN {
       T *b_hy, *db_hy;
 
       T *h;
+      T *_output;
 
       size_t rnn_size;
       size_t seq_len;
@@ -44,6 +45,12 @@ namespace RNN {
 
       T forward(T *x);
       void backward();
+
+     /**
+      * Return the output of the cell
+      * The values are raw values to which softmax is applied
+      */
+      void output(T *_o);
 
       void checkpoint();
   };

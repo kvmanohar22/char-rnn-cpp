@@ -14,8 +14,8 @@ namespace RNN {
   namespace layers {
    /**
     * Softmax Layer
-    * Applies softmax to a vector on inputs and then computes the
-    * cross entropy loss
+    * Applies stable softmax to a vector on inputs and then computes the
+    * cross entropy loss for multi-class classification
     */
 
     template <class T>
@@ -29,7 +29,7 @@ namespace RNN {
        /**
         * Cross-Entropy loss computed during forward propagation
         */
-        T loss;
+        T _loss;
        /**
         * Length of the input vector
         */
@@ -65,6 +65,13 @@ namespace RNN {
         * @param labels One hot vector of labels
         */
         void backward(T *grads, T *labels);
+
+       /**
+        * Return loss
+        */
+        inline T loss() const {
+          return this->_loss;
+        }
     };
 
   }  // namespace layers

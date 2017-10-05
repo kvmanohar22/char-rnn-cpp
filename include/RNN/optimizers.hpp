@@ -3,6 +3,7 @@
 
 #include "RNN/dataset.hpp"
 #include "RNN/rnn_cell.hpp"
+#include "RNN/softmax_layer.hpp"
 
 #include <cstddef>
 
@@ -46,7 +47,7 @@ namespace RNN {
         Utils::phase PHASE;
 
         RNN::vanilla_cell<T> *cell;
-
+        RNN::layers::Softmax<T> *soft_layer;
 
        /**
         * current idx of the data to be loaded

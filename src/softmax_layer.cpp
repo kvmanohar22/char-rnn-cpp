@@ -42,7 +42,7 @@ namespace RNN {
       bool flag = false;
       for (size_t i = 0; i < vec_len; ++i) {
         if (labels[i] == 1) {
-          this->loss = utils<T>::Log(probs[i]);
+          this->_loss = utils<T>::Log(probs[i]);
           flag = true;
           break;
         }

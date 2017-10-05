@@ -48,16 +48,16 @@ namespace RNN {
 
         /**
          * Given input, this generates the target for that input
-         * @param input  Vector of input characters whose size is `time_step`
-         * @param target Vector of target characters whose size is `time_step`
+         * @param input  Vector of input characters whose size is `seq_len`
+         * @param target Vector of target characters whose size is `seq_len`
          */
         void generate_target(T *input, T *target);
 
         /**
          * Converts each character into one-hot vector
-         * @param input     Vector of input characters whose size is `time_step`
+         * @param input     Vector of input characters whose size is `seq_len`
          * @param tokenized Vector of target characters as one-hot vectors
-         *                  whose size is `time_step*voc_len` 
+         *                  whose size is `seq_len * voc_len` 
          */
         void tokenize_chars(T *input, T *tokenized);
 
@@ -69,6 +69,10 @@ namespace RNN {
           return this->dataset_size;
         }
 
+
+        /**
+         * Returns the number of `batch_size * seq_len` chunks
+         */
         inline size_t get_max_len(phase PHASE) {
           if (PHASE == TRAIN) {
             return train_size;
