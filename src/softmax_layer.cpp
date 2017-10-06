@@ -11,7 +11,8 @@ namespace RNN {
     Softmax<T>::Softmax(size_t vec_len, int axis) {
       this->axis = axis;
       this->vec_len = vec_len;
-      this->probs = new T[vec_len]; 
+      this->probs = new T[vec_len];
+      this->y_hat.clear();
     }
 
     template <class T>

@@ -51,6 +51,7 @@ namespace RNN {
 
     h = new T[rnn_size];
     _output = new T[voc_len];
+
   }
 
   template <class T>
@@ -104,9 +105,16 @@ namespace RNN {
   }
 
   template <class T>
-  void vanilla_cell<T>::output(T *_o) {
+  void vanilla_cell<T>::get_o_dt(T *_o) {
     for (size_t i = 0; i < voc_len; ++i) {
       _o[i] = this->_output[i];
+    }
+  }
+
+  template <class T>
+  void vanilla_cell<T>::get_h_dt(T *_o) {
+    for (size_t i = 0; i < rnn_size; ++i) {
+      _o[i] = this->h[i];
     }
   }
 
@@ -116,13 +124,12 @@ namespace RNN {
   }
 
   template <class T>
-  void vanilla_cell<T>::update_h(T *new_h) {
+  void vanilla_cell<T>::update_h(T *new_h, bool all_zero) {
     for (size_t i = 0; i < rnn_size; ++i) {
-      try {
+      if (all_zero) {
+        this->h[i] = T(0);
+      } else {
         this->h[i] = new_h[i];
-      } catch (std::exception &exp) {
-        std::cerr << "Exception occured in updating hypothesis: "
-                  << exp.what() << std::endl;
       }
     }
   }
@@ -150,6 +157,30 @@ namespace RNN {
  template <class T>
   void vanilla_cell<T>::checkpoint() {
 
+  }
+
+ template <class T>
+  void vanilla_cell<T>::accumulate_gradients(int w_idx, T *grads) {
+    switch(w_idx) {
+      case 0:
+        this->accumulate_dbhy(grads);
+        break;
+      case 1:
+        this->accumulate_dbxh(grads);
+        break;
+      case 2:
+        this->accumulate_dWhy(grads);
+        break;
+      case 3:
+        this->accumulate_dWhh(grads);
+        break;
+      case 4:
+        this->accumulate_dWxh(grads);
+        break;
+      default:
+        std::cerr << "Out of bounds weights index !\n";
+        exit(-1);
+    }
   }
 
 }

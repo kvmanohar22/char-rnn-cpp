@@ -46,6 +46,10 @@ namespace RNN {
       T *input_dt = new T[dataset->get_voc_len()];
       T *target_dt = new T[dataset->get_voc_len()];
 
+      // Refresh the internal state of the network
+      cell->refresh();
+      soft_layer->refresh();
+
       // Forward pass
       for (size_t dt = 0; dt < seq_len; ++dt) {
         // Slice the data for a single time step
@@ -54,14 +58,24 @@ namespace RNN {
           target_dt[j] = target[dataset->get_voc_len() * dt + j];
         }
         cell->forward(input_dt);
-        cell->output(output_dt);
+        cell->get_o_dt(output_dt);
         soft_layer->forward(output_dt, target_dt);
+
+        // Store the intermediate activations for use in the backprop
+        cell->accumulate_o_dt();
+        cell->accumulate_h_dt();
+        soft_layer->accumulate_yhat();
+
+        // Store Cross Entropy loss for debugging
         T loss = soft_layer->loss();
         loss_t.push_back(loss);
       }
 
       // Backward pass and update weights
-      cell->backward();
+      for (size_t dt = seq_len; dt > 0; --dt) {
+
+      }
+
       delete output_dt;
       delete input_dt;
       delete target_dt;

@@ -6,6 +6,7 @@
 #include <cassert>
 #include <climits>
 #include <cstddef>
+#include <vector>
 #include <algorithm>
 
 
@@ -39,6 +40,12 @@ namespace RNN {
         * Store them for use during the backward pass
         */
         T *probs;
+        
+       /**
+        * Probability values which are calculated during forward propagation
+        * Store them for use during the backward pass
+        */
+        std::vector<T *> y_hat;
 
       public:
        /**
@@ -72,6 +79,21 @@ namespace RNN {
         inline T loss() const {
           return this->_loss;
         }
+        
+       /**
+        * Store all the probability distribution for entire time step
+        */
+        inline void accumulate_yhat() {
+          this->y_hat.push_back(this->probs);
+        }
+
+       /**
+        * Clear the entire predictions after each time step
+        */
+        inline void refresh() {
+          this->y_hat.clear();
+        }
+
     };
 
   }  // namespace layers

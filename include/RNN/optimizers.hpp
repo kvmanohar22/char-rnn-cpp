@@ -77,6 +77,11 @@ namespace RNN {
         * @param num_steps Number of steps
         */
         void steps(int num_epochs=100);
+
+       /**
+        * Update the weights of the network after one `step`
+        */
+        void update_weights();
     };
 
   }  // namespace Optimizers
